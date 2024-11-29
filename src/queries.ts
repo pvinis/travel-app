@@ -2,7 +2,9 @@ import { id, tx } from "@instantdb/react"
 import { db } from "./db"
 
 export function useInfo() {
-  return db.useQuery({ travelAppInfo: {} })
+  return db.useQuery({
+    travelAppInfo: { $: { order: { serverCreatedAt: "asc" } } },
+  })
 }
 
 export function useAddInfo() {
@@ -18,7 +20,9 @@ export function useDeleteInfo() {
 }
 
 export function useSchedule() {
-  return db.useQuery({ travelAppSchedule: {} })
+  return db.useQuery({
+    travelAppSchedule: { $: { order: { serverCreatedAt: "asc" } } },
+  })
 }
 
 export function useAddSchedule() {
@@ -34,7 +38,9 @@ export function useDeleteSchedule() {
 }
 
 export function useWants() {
-  return db.useQuery({ travelAppWants: {} })
+  return db.useQuery({
+    travelAppWants: { $: { order: { serverCreatedAt: "asc" } } },
+  })
 }
 
 export function useAddWant() {
