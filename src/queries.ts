@@ -1,9 +1,11 @@
 import { id, tx } from "@instantdb/react"
 import { db } from "./db"
 
-export function useInfo() {
+export function useAllTheStuff() {
   return db.useQuery({
-    travelAppInfo: { $: { order: { serverCreatedAt: "asc" } } },
+    travelAppInfo: {},
+    travelAppSchedule: {},
+    travelAppWants: {},
   })
 }
 
@@ -32,12 +34,6 @@ export function useEditInfo() {
   return editInfo
 }
 
-export function useSchedule() {
-  return db.useQuery({
-    travelAppSchedule: { $: { order: { serverCreatedAt: "asc" } } },
-  })
-}
-
 export function useAddSchedule() {
   const addSchedule = ({ text, author }: { text: string; author: string }) =>
     db.transact([tx.travelAppSchedule[id()].update({ text, author })])
@@ -61,12 +57,6 @@ export function useEditSchedule() {
     author: string
   }) => db.transact([tx.travelAppSchedule[id].update({ text, author })])
   return editSchedule
-}
-
-export function useWants() {
-  return db.useQuery({
-    travelAppWants: { $: { order: { serverCreatedAt: "asc" } } },
-  })
 }
 
 export function useAddWant() {

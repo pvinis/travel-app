@@ -12,40 +12,36 @@ import {
   useAddInfo,
   useAddSchedule,
   useAddWant,
+  useAllTheStuff,
   useDeleteInfo,
   useDeleteSchedule,
   useDeleteWant,
   useEditInfo,
   useEditSchedule,
   useEditWant,
-  useInfo,
-  useSchedule,
-  useWants,
 } from "./queries"
 
 export function App() {
   const USERS = ["Io", "Pa", "Da", "Fo", "Gi"]
 
-  const info = useInfo()
+  const allTheStuff = useAllTheStuff()
   const addInfo = useAddInfo()
   const deleteInfo = useDeleteInfo()
   const editInfo = useEditInfo()
-  const schedule = useSchedule()
   const addSchedule = useAddSchedule()
   const deleteSchedule = useDeleteSchedule()
   const editSchedule = useEditSchedule()
-  const wants = useWants()
   const addWant = useAddWant()
   const deleteWant = useDeleteWant()
   const editWant = useEditWant()
 
   const [filterUser, setFilterUser] = useState<string | "all">("all")
 
-  if (wants.error) {
-    return <p>Error fetching data: {wants.error.message}</p>
+  if (allTheStuff.error) {
+    return <p>Error fetching data: {allTheStuff.error.message}</p>
   }
 
-  if (wants.isLoading) {
+  if (allTheStuff.isLoading) {
     return <p>Loading...</p>
   }
 
@@ -104,7 +100,7 @@ export function App() {
         </div>
         <ListSection
           title="Travel & Stay Info"
-          entries={info.data?.travelAppInfo ?? []}
+          entries={allTheStuff.data?.travelAppInfo ?? []}
           type="travel"
           onAddEntry={handleAddEntry}
           onDeleteEntry={handleDeleteEntry}
@@ -113,7 +109,7 @@ export function App() {
         />
         <ListSection
           title="Already Scheduled"
-          entries={schedule.data?.travelAppSchedule ?? []}
+          entries={allTheStuff.data?.travelAppSchedule ?? []}
           type="schedule"
           onAddEntry={handleAddEntry}
           onDeleteEntry={handleDeleteEntry}
@@ -122,7 +118,7 @@ export function App() {
         />
         <ListSection
           title="Maybe Visit/Suggestions"
-          entries={wants.data?.travelAppWants ?? []}
+          entries={allTheStuff.data?.travelAppWants ?? []}
           type="wants"
           onAddEntry={handleAddEntry}
           onDeleteEntry={handleDeleteEntry}
