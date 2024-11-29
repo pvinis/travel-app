@@ -12,6 +12,12 @@ interface ListSectionProps {
   onAddEntry: (text: string, author: string, type: ListType) => void
   onDeleteEntry: (id: string, type: ListType) => void
   filterUser: string | "all"
+  onEditEntry: (
+    id: string,
+    author: string,
+    text: string,
+    type: ListType,
+  ) => void
 }
 
 export function ListSection({
@@ -21,12 +27,15 @@ export function ListSection({
   onAddEntry,
   onDeleteEntry,
   filterUser,
+  onEditEntry,
 }: ListSectionProps) {
   const [isAdding, setIsAdding] = useState(false)
   const [newEntry, setNewEntry] = useState("")
   const [selectedUser, setSelectedUser] = useState("")
   const constraintsRef = useRef(null)
   const [entryToDelete, setEntryToDelete] = useState<string | null>(null)
+  const [editingEntry, setEditingEntry] = useState<ListEntry | null>(null)
+  const [editText, setEditText] = useState("")
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -37,9 +46,21 @@ export function ListSection({
     }
   }
 
-  const handleDragEnd = (entryId: string, info: PanInfo) => {
+  const handleDragEnd = (entry: ListEntry, info: PanInfo) => {
     if (info.offset.x < -100) {
-      setEntryToDelete(entryId)
+      setEntryToDelete(entry.id)
+    } else if (info.offset.x > 100) {
+      setEditingEntry(entry)
+      setEditText(entry.text)
+    }
+  }
+
+  const handleEditSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (editingEntry && editText.trim()) {
+      onEditEntry(editingEntry.id, editingEntry.author, editText.trim(), type)
+      setEditingEntry(null)
+      setEditText("")
     }
   }
 
@@ -61,7 +82,7 @@ export function ListSection({
             drag="x"
             dragConstraints={constraintsRef}
             dragMomentum={false}
-            onDragEnd={(_, info) => handleDragEnd(entry.id, info)}
+            onDragEnd={(_, info) => handleDragEnd(entry, info)}
           >
             <div className="mr-2 flex-1 select-text">
               <span className="text-m whitespace-normal break-all">
@@ -165,6 +186,31 @@ export function ListSection({
               </Button>
             </div>
           </div>
+        </div>
+      )}
+      {editingEntry && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <form
+            onSubmit={handleEditSubmit}
+            className="w-96 rounded-lg bg-white p-4"
+          >
+            <Textarea
+              value={editText}
+              onChange={(e) => setEditText(e.target.value)}
+              className="w-full"
+              autoFocus
+            />
+            <div className="mt-4 flex justify-end gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setEditingEntry(null)}
+              >
+                Cancel
+              </Button>
+              <Button type="submit">Save</Button>
+            </div>
+          </form>
         </div>
       )}
     </div>

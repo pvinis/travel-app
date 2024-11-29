@@ -19,6 +19,19 @@ export function useDeleteInfo() {
   return deleteInfo
 }
 
+export function useEditInfo() {
+  const editInfo = ({
+    id,
+    text,
+    author,
+  }: {
+    id: string
+    text: string
+    author: string
+  }) => db.transact([tx.travelAppInfo[id].update({ text, author })])
+  return editInfo
+}
+
 export function useSchedule() {
   return db.useQuery({
     travelAppSchedule: { $: { order: { serverCreatedAt: "asc" } } },
@@ -37,6 +50,19 @@ export function useDeleteSchedule() {
   return deleteSchedule
 }
 
+export function useEditSchedule() {
+  const editSchedule = ({
+    id,
+    text,
+    author,
+  }: {
+    id: string
+    text: string
+    author: string
+  }) => db.transact([tx.travelAppSchedule[id].update({ text, author })])
+  return editSchedule
+}
+
 export function useWants() {
   return db.useQuery({
     travelAppWants: { $: { order: { serverCreatedAt: "asc" } } },
@@ -53,4 +79,17 @@ export function useDeleteWant() {
   const deleteWant = (id: string) =>
     db.transact([tx.travelAppWants[id].delete()])
   return deleteWant
+}
+
+export function useEditWant() {
+  const editWant = ({
+    id,
+    text,
+    author,
+  }: {
+    id: string
+    text: string
+    author: string
+  }) => db.transact([tx.travelAppWants[id].update({ text, author })])
+  return editWant
 }

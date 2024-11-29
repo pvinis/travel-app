@@ -15,6 +15,9 @@ import {
   useDeleteInfo,
   useDeleteSchedule,
   useDeleteWant,
+  useEditInfo,
+  useEditSchedule,
+  useEditWant,
   useInfo,
   useSchedule,
   useWants,
@@ -26,12 +29,15 @@ export function App() {
   const info = useInfo()
   const addInfo = useAddInfo()
   const deleteInfo = useDeleteInfo()
+  const editInfo = useEditInfo()
   const schedule = useSchedule()
   const addSchedule = useAddSchedule()
   const deleteSchedule = useDeleteSchedule()
+  const editSchedule = useEditSchedule()
   const wants = useWants()
   const addWant = useAddWant()
   const deleteWant = useDeleteWant()
+  const editWant = useEditWant()
 
   const [filterUser, setFilterUser] = useState<string | "all">("all")
 
@@ -63,6 +69,21 @@ export function App() {
     }
   }
 
+  const handleEditEntry = (
+    id: string,
+    author: string,
+    text: string,
+    type: ListType,
+  ) => {
+    if (type === "wants") {
+      editWant({ id, author, text })
+    } else if (type === "schedule") {
+      editSchedule({ id, author, text })
+    } else if (type === "travel") {
+      editInfo({ id, author, text })
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="mx-auto max-w-md space-y-6 p-4">
@@ -87,6 +108,7 @@ export function App() {
           type="travel"
           onAddEntry={handleAddEntry}
           onDeleteEntry={handleDeleteEntry}
+          onEditEntry={handleEditEntry}
           filterUser={filterUser}
         />
         <ListSection
@@ -95,6 +117,7 @@ export function App() {
           type="schedule"
           onAddEntry={handleAddEntry}
           onDeleteEntry={handleDeleteEntry}
+          onEditEntry={handleEditEntry}
           filterUser={filterUser}
         />
         <ListSection
@@ -103,6 +126,7 @@ export function App() {
           type="wants"
           onAddEntry={handleAddEntry}
           onDeleteEntry={handleDeleteEntry}
+          onEditEntry={handleEditEntry}
           filterUser={filterUser}
         />
       </div>
