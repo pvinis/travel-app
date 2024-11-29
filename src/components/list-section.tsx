@@ -120,7 +120,7 @@ export function ListSection({
         </Button>
       )}
       {entryToDelete && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="rounded-lg bg-white p-4">
             <p>Are you sure you want to delete this entry?</p>
             <div className="mt-4 flex justify-end">
