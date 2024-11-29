@@ -60,11 +60,27 @@ export function ListSection({
             className="relative flex items-center justify-between overflow-hidden rounded-lg border bg-white p-3"
             drag="x"
             dragConstraints={constraintsRef}
+            dragMomentum={false}
             onDragEnd={(_, info) => handleDragEnd(entry.id, info)}
           >
-            <div className="mr-2 flex-1">
+            <div className="mr-2 flex-1 select-text">
               <span className="text-m whitespace-normal break-all">
-                {entry.text}
+                {entry.text.split(/(https?:\/\/[^\s]+)/).map((part, i) =>
+                  /^https?:\/\//.test(part) ? (
+                    <a
+                      key={i}
+                      href={part}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {part}
+                    </a>
+                  ) : (
+                    part
+                  ),
+                )}
               </span>
             </div>
             <span className="text-sm text-orange-800">{entry.author}</span>
