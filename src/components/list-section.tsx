@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { UserSelector } from "./user-selector"
@@ -54,7 +52,6 @@ export function ListSection({
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold">{title}</h2>
-        {/*Select component removed*/}
       </div>
       <div className="space-y-2" ref={constraintsRef}>
         {filteredEntries.map((entry) => (
@@ -66,7 +63,9 @@ export function ListSection({
             onDragEnd={(_, info) => handleDragEnd(entry.id, info)}
           >
             <div className="mr-2 flex-1">
-              <span className="text-m">{entry.text}</span>
+              <span className="text-m whitespace-normal break-all">
+                {entry.text}
+              </span>
             </div>
             <span className="text-sm text-orange-800">{entry.author}</span>
           </motion.div>
