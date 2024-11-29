@@ -2,10 +2,10 @@
 
 import { useState, useRef } from "react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { UserSelector } from "./user-selector"
 import { motion, PanInfo } from "framer-motion"
 import type { ListEntry, ListType } from "../types"
+import { Textarea } from "./ui/textarea"
 
 interface ListSectionProps {
   title: string
@@ -74,8 +74,7 @@ export function ListSection({
       </div>
       {isAdding ? (
         <form onSubmit={handleSubmit} className="space-y-4">
-          <Input
-            type="text"
+          <Textarea
             value={newEntry}
             onChange={(e) => setNewEntry(e.target.value)}
             placeholder="Enter text..."
