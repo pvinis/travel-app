@@ -8,31 +8,31 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@instantdb/react": "^0.16.2",
+    "@instantdb/react": "^0.16.5",
     "@radix-ui/react-select": "^2.1.2",
     "@radix-ui/react-slot": "^1.1.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "framer-motion": "^11.12.0",
-    "lucide-react": "^0.462.0",
+    "framer-motion": "^11.13.1",
+    "lucide-react": "^0.468.0",
     "luxon": "^3.5.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@types/node": "^22.10.1",
-    "@types/react": "^18.3.12",
-    "@types/react-dom": "^18.3.1",
+    "@types/react": "^19.0.1",
+    "@types/react-dom": "^19.0.1",
     "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.49",
-    "prettier": "^3.4.1",
+    "prettier": "^3.4.2",
     "prettier-plugin-tailwindcss": "^0.6.9",
-    "tailwindcss": "^3.4.15",
+    "tailwindcss": "^3.4.16",
     "tailwindcss-motion": "^0.4.3-beta",
     "typescript": "^5.7.2",
-    "vite": "^6.0.1"
+    "vite": "^6.0.3"
   }
 }
