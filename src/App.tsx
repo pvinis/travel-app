@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { ListSection } from "@/components/list-section"
-import type { ListType } from "./types"
+import type { Doc, ListType } from "./types"
 import {
   Select,
   SelectContent,
@@ -8,60 +8,55 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import {
-  useAddInfo,
-  useAddSchedule,
-  useAddWant,
-  useAllTheStuff,
-  useDeleteInfo,
-  useDeleteSchedule,
-  useDeleteWant,
-  useEditInfo,
-  useEditSchedule,
-  useEditWant,
-} from "./queries"
+import { useDocument } from "@automerge/automerge-repo-react-hooks"
+import { AutomergeUrl } from "@automerge/automerge-repo"
 
-export function App() {
-  const USERS = ["Io", "Pa", "Da", "Fo", "Gi"]
+const USERS = ["Io", "Pa", "Da", "Fo", "Gi"]
 
-  const allTheStuff = useAllTheStuff()
-  const addInfo = useAddInfo()
-  const deleteInfo = useDeleteInfo()
-  const editInfo = useEditInfo()
-  const addSchedule = useAddSchedule()
-  const deleteSchedule = useDeleteSchedule()
-  const editSchedule = useEditSchedule()
-  const addWant = useAddWant()
-  const deleteWant = useDeleteWant()
-  const editWant = useEditWant()
+export function App({ docUrl }: { docUrl: AutomergeUrl }) {
+  const [doc, changeDoc] = useDocument<Doc>(docUrl)
 
   const [filterUser, setFilterUser] = useState<string | "all">("all")
 
-  if (allTheStuff.error) {
-    return <p>Error fetching data: {allTheStuff.error.message}</p>
-  }
-
-  if (allTheStuff.isLoading) {
+  if (!doc) {
     return <p>Loading...</p>
   }
 
   const handleAddEntry = (text: string, author: string, type: ListType) => {
     if (type === "wants") {
-      addWant({ text, author })
+      changeDoc((d) => d.wants.push({ id: crypto.randomUUID(), text, author }))
     } else if (type === "schedule") {
-      addSchedule({ text, author })
+      changeDoc((d) =>
+        d.schedule.push({ id: crypto.randomUUID(), text, author }),
+      )
     } else if (type === "travel") {
-      addInfo({ text, author })
+      console.log("add travel")
+      changeDoc((d) => d.travel.push({ id: crypto.randomUUID(), text, author }))
     }
   }
 
   const handleDeleteEntry = (id: string, type: ListType) => {
     if (type === "wants") {
-      deleteWant(id)
+      changeDoc((d) =>
+        d.wants.splice(
+          d.wants.findIndex((e) => e.id === id),
+          1,
+        ),
+      )
     } else if (type === "schedule") {
-      deleteSchedule(id)
+      changeDoc((d) =>
+        d.schedule.splice(
+          d.schedule.findIndex((e) => e.id === id),
+          1,
+        ),
+      )
     } else if (type === "travel") {
-      deleteInfo(id)
+      changeDoc((d) =>
+        d.travel.splice(
+          d.travel.findIndex((e) => e.id === id),
+          1,
+        ),
+      )
     }
   }
 
@@ -72,11 +67,29 @@ export function App() {
     type: ListType,
   ) => {
     if (type === "wants") {
-      editWant({ id, author, text })
+      changeDoc((d) => {
+        const entry = d.wants.find((e) => e.id === id)
+        if (entry) {
+          entry.text = text
+          entry.author = author
+        }
+      })
     } else if (type === "schedule") {
-      editSchedule({ id, author, text })
+      changeDoc((d) => {
+        const entry = d.schedule.find((e) => e.id === id)
+        if (entry) {
+          entry.text = text
+          entry.author = author
+        }
+      })
     } else if (type === "travel") {
-      editInfo({ id, author, text })
+      changeDoc((d) => {
+        const entry = d.travel.find((e) => e.id === id)
+        if (entry) {
+          entry.text = text
+          entry.author = author
+        }
+      })
     }
   }
 
@@ -100,7 +113,7 @@ export function App() {
         </div>
         <ListSection
           title="Travel & Stay Info"
-          entries={allTheStuff.data?.travelAppInfo ?? []}
+          entries={doc?.travel ?? []}
           type="travel"
           onAddEntry={handleAddEntry}
           onDeleteEntry={handleDeleteEntry}
@@ -109,7 +122,7 @@ export function App() {
         />
         <ListSection
           title="Already Scheduled"
-          entries={allTheStuff.data?.travelAppSchedule ?? []}
+          entries={doc?.schedule ?? []}
           type="schedule"
           onAddEntry={handleAddEntry}
           onDeleteEntry={handleDeleteEntry}
@@ -118,7 +131,7 @@ export function App() {
         />
         <ListSection
           title="Maybe Visit/Suggestions"
-          entries={allTheStuff.data?.travelAppWants ?? []}
+          entries={doc?.wants ?? []}
           type="wants"
           onAddEntry={handleAddEntry}
           onDeleteEntry={handleDeleteEntry}

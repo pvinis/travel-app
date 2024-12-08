@@ -9,3 +9,9 @@ export interface ListEntry {
   text: string
   author: string
 }
+
+export type Doc = {
+  wants: ListEntry[]
+  schedule: ListEntry[]
+  travel: ListEntry[]
+}
