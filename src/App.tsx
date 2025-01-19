@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { ListSection } from "@/components/list-section"
-import type { Doc, ListType } from "./types"
+import type { ListType } from "./types"
 import {
   Select,
   SelectContent,
@@ -8,55 +8,60 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { useDocument } from "@automerge/automerge-repo-react-hooks"
-import { AutomergeUrl } from "@automerge/automerge-repo"
+import {
+  useAddInfo,
+  useAddSchedule,
+  useAddWant,
+  useAllTheStuff,
+  useDeleteInfo,
+  useDeleteSchedule,
+  useDeleteWant,
+  useEditInfo,
+  useEditSchedule,
+  useEditWant,
+} from "./queries"
 
-const USERS = ["Io", "Pa", "Da", "Fo", "Gi"]
+export function App() {
+  const USERS = ["Io", "Pa", "Da", "Fo", "Gi"]
 
-export function App({ docUrl }: { docUrl: AutomergeUrl }) {
-  const [doc, changeDoc] = useDocument<Doc>(docUrl)
+  const allTheStuff = useAllTheStuff()
+  const addInfo = useAddInfo()
+  const deleteInfo = useDeleteInfo()
+  const editInfo = useEditInfo()
+  const addSchedule = useAddSchedule()
+  const deleteSchedule = useDeleteSchedule()
+  const editSchedule = useEditSchedule()
+  const addWant = useAddWant()
+  const deleteWant = useDeleteWant()
+  const editWant = useEditWant()
 
   const [filterUser, setFilterUser] = useState<string | "all">("all")
 
-  if (!doc) {
+  if (allTheStuff.error) {
+    return <p>Error fetching data: {allTheStuff.error.message}</p>
+  }
+
+  if (allTheStuff.isLoading) {
     return <p>Loading...</p>
   }
 
   const handleAddEntry = (text: string, author: string, type: ListType) => {
     if (type === "wants") {
-      changeDoc((d) => d.wants.push({ id: crypto.randomUUID(), text, author }))
+      addWant({ text, author })
     } else if (type === "schedule") {
-      changeDoc((d) =>
-        d.schedule.push({ id: crypto.randomUUID(), text, author }),
-      )
+      addSchedule({ text, author })
     } else if (type === "travel") {
-      console.log("add travel")
-      changeDoc((d) => d.travel.push({ id: crypto.randomUUID(), text, author }))
+      addInfo({ text, author })
     }
   }
 
   const handleDeleteEntry = (id: string, type: ListType) => {
     if (type === "wants") {
-      changeDoc((d) =>
-        d.wants.splice(
-          d.wants.findIndex((e) => e.id === id),
-          1,
-        ),
-      )
+      deleteWant(id)
     } else if (type === "schedule") {
-      changeDoc((d) =>
-        d.schedule.splice(
-          d.schedule.findIndex((e) => e.id === id),
-          1,
-        ),
-      )
+      deleteSchedule(id)
     } else if (type === "travel") {
-      changeDoc((d) =>
-        d.travel.splice(
-          d.travel.findIndex((e) => e.id === id),
-          1,
-        ),
-      )
+      deleteInfo(id)
     }
   }
 
@@ -67,29 +72,11 @@ export function App({ docUrl }: { docUrl: AutomergeUrl }) {
     type: ListType,
   ) => {
     if (type === "wants") {
-      changeDoc((d) => {
-        const entry = d.wants.find((e) => e.id === id)
-        if (entry) {
-          entry.text = text
-          entry.author = author
-        }
-      })
+      editWant({ id, author, text })
     } else if (type === "schedule") {
-      changeDoc((d) => {
-        const entry = d.schedule.find((e) => e.id === id)
-        if (entry) {
-          entry.text = text
-          entry.author = author
-        }
-      })
+      editSchedule({ id, author, text })
     } else if (type === "travel") {
-      changeDoc((d) => {
-        const entry = d.travel.find((e) => e.id === id)
-        if (entry) {
-          entry.text = text
-          entry.author = author
-        }
-      })
+      editInfo({ id, author, text })
     }
   }
 
@@ -113,7 +100,7 @@ export function App({ docUrl }: { docUrl: AutomergeUrl }) {
         </div>
         <ListSection
           title="Travel & Stay Info"
-          entries={doc?.travel ?? []}
+          entries={allTheStuff.data?.travelAppInfo ?? []}
           type="travel"
           onAddEntry={handleAddEntry}
           onDeleteEntry={handleDeleteEntry}
@@ -122,7 +109,7 @@ export function App({ docUrl }: { docUrl: AutomergeUrl }) {
         />
         <ListSection
           title="Already Scheduled"
-          entries={doc?.schedule ?? []}
+          entries={allTheStuff.data?.travelAppSchedule ?? []}
           type="schedule"
           onAddEntry={handleAddEntry}
           onDeleteEntry={handleDeleteEntry}
@@ -131,7 +118,7 @@ export function App({ docUrl }: { docUrl: AutomergeUrl }) {
         />
         <ListSection
           title="Maybe Visit/Suggestions"
-          entries={doc?.wants ?? []}
+          entries={allTheStuff.data?.travelAppWants ?? []}
           type="wants"
           onAddEntry={handleAddEntry}
           onDeleteEntry={handleDeleteEntry}
