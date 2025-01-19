@@ -88,19 +88,11 @@ export function ListSection({
               <span className="text-m whitespace-pre-wrap break-all">
                 {entry.text.split(/(https?:\/\/[^\s]+)/).map((part, i) => {
                   if (/^https?:\/\//.test(part)) {
-                    // Check if the entire text is just this URL
-                    const isOnlyUrl = entry.text.trim() === part
                     let displayUrl = part
-
-                    if (isOnlyUrl) {
-                      const match = part.match(/^(https?:\/\/[^?#]+)/)
-                      if (match) {
-                        displayUrl =
-                          displayUrl.length > 40
-                            ? displayUrl.substring(0, 40) + "..."
-                            : displayUrl
-                      }
-                    }
+                    // Always truncate URLs, regardless of context
+                    displayUrl = displayUrl.length >30
+                      ? displayUrl.substring(0, 30) + "..."
+                      : displayUrl
 
                     return (
                       <a
@@ -115,7 +107,6 @@ export function ListSection({
                       </a>
                     )
                   }
-                  // Split non-URL parts by newlines and join with <br> elements
                   return part.split('\n').map((line, lineIndex, array) => (
                     <span key={`${i}-${lineIndex}`}>
                       {line}
