@@ -85,7 +85,7 @@ export function ListSection({
             onDragEnd={(_, info) => handleDragEnd(entry, info)}
           >
             <div className="mr-2 flex-1 select-text">
-              <span className="text-m whitespace-normal break-all">
+              <span className="text-m whitespace-pre-wrap break-all">
                 {entry.text.split(/(https?:\/\/[^\s]+)/).map((part, i) => {
                   if (/^https?:\/\//.test(part)) {
                     // Check if the entire text is just this URL
@@ -93,20 +93,12 @@ export function ListSection({
                     let displayUrl = part
 
                     if (isOnlyUrl) {
-                      // Extract domain and first path segment
                       const match = part.match(/^(https?:\/\/[^?#]+)/)
                       if (match) {
-                        console.log({ isOnlyUrl, part, displayUrl })
-                        // Simply truncate and add dots at the end
                         displayUrl =
                           displayUrl.length > 40
                             ? displayUrl.substring(0, 40) + "..."
                             : displayUrl
-                        console.log({
-                          isOnlyUrl: "ok",
-                          part,
-                          displayUrl,
-                        })
                       }
                     }
 
@@ -123,7 +115,13 @@ export function ListSection({
                       </a>
                     )
                   }
-                  return part
+                  // Split non-URL parts by newlines and join with <br> elements
+                  return part.split('\n').map((line, lineIndex, array) => (
+                    <span key={`${i}-${lineIndex}`}>
+                      {line}
+                      {lineIndex < array.length - 1 && <br />}
+                    </span>
+                  ))
                 })}
               </span>
             </div>
